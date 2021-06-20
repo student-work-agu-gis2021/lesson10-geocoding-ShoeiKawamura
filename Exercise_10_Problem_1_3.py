@@ -12,6 +12,8 @@ import pandas as pd
 # Read the data (replace "None" with your own code)
 data = None
 # YOUR CODE HERE 1 to read the data
+fp=r"data/shopping_centers.txt"
+data=pd.read_csv(fp,sep=',',header=None)
 
 #TEST COEE
 # Check your input data
@@ -25,6 +27,7 @@ from geopandas.tools import geocode
 
 # Geocode addresses using Nominatim. Remember to provide a custom "application name" in the user_agent parameter!
 #YOUR CODE HERE 2 for geocoding
+geo=geocode(data['name'],provider='nominatim',user_agent='jibinGIS')
 
 #TEST CODE
 # Check the geocoded output
@@ -45,7 +48,7 @@ print(geo.crs)
 
 
 # YOUR CODE HERE 4 to join the tables
-geodata = None
+geodata = geo.join(data)
 
 #TEST CODE
 # Check the join output
@@ -57,6 +60,7 @@ print(geodata.head())
 # Define output filepath
 out_fp = None
 # YOUR CODE HERE 5 to save the output
+outfp=r"data/shopping_centers.shp"
 
 # TEST CODE
 # Print info about output file
@@ -69,8 +73,10 @@ print("Geocoded output is stored in this file:", out_fp)
  
 
 # YOUR CODE HERE 6 to create a new column
+geodata['buffer']=None
 
 # YOUR CODE HERE 7 to set buffer column
+geodata['buffer']=geodata['geometry'].buffer(distance=1500)
 
 #TEST CODE
 print(geodata.head())
@@ -88,6 +94,7 @@ print(round(gpd.GeoSeries(geodata["buffer"]).area / 1000000))
 # - Replace the values in `geometry` column with the values of `buffer` column:
 
 # YOUR CODE HERE 8 to replace the values in geometry
+geo['geometry']=geodata['buffer']
 
 #TEST CODE
 print(geodata.head())
